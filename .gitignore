@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamerGuyYT Clicker</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #00bfff;
+        }
+        .button, .shop-button, .upgrade-button, .badge {
+            background-color: #333;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .button:hover, .shop-button:hover, .upgrade-button:hover, .badge:hover {
+            background-color: #444;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #555;
+            margin: 10px auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 20px;
+            background-color: #00bfff;
+            width: 0;
+        }
+        #coin-animations {
+            position: relative;
+        }
+        .coin-animation {
+            position: absolute;
+            animation: fly 1s ease-in-out forwards;
+        }
+        @keyframes fly {
+            0% { top: 0; opacity: 1; }
+            100% { top: -100px; opacity: 0; }
+        }
+        #click-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #00bfff;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            margin: 20px;
+        }
+        #click-circle:hover {
+            background-color: #0099cc;
+        }
+        #secret-trigger {
+            font-size: 16px;
+            color: #999;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #secret-message {
+            display: none;
+            color: #00ff00;
+            font-size: 18px;
+            margin-top: 20px;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .badge-completed {
+            color: green;
+        }
+        .badge {
+            margin: 10px;
+        }
+        #coin-clicker {
+            margin-top: 30px;
+        }
+        .upgrades {
+            margin-top: 30px;
+        }
+        .leaderboard {
+            margin-top: 30px;
+        }
+        .achievements {
+            margin-top: 20px;
+        }
+        .achievement {
+            display: inline-block;
+            background-color: #555;
+            padding: 10px;
+            margin: 10px;
+            color: #fff;
+            border-radius: 5px;
+        }
+        .achievement-earned {
+            background-color: #00bfff;
+        }
+        .timer-reward {
+            margin-top: 20px;
+        }
+        .theme-toggle {
+            margin-top: 20px;
+            color: #00bfff;
+            cursor: pointer;
+        }
+        .daily-reward {
+            margin-top: 20px;
+            color: #ffff00;
+            cursor: pointer;
+        }
+        .music-control {
+            margin-top: 20px;
+            color: #ff6600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>GamerGuyYT Clicker</h1>
+
+    <h2>Coins: <span id="coin-count">0</span></h2>
+    <h2>Total Clicks: <span id="total-clicks">0</span></h2>
+    <h2>Total Coins Earned: <span id="total-coins-earned">0</span></h2>
+    <h2>Level: <span id="player-level">1</span></h2>
+
+    <h3>Coins per second: <span id="cps">0</span></h3>
+
+    <!-- Blue Circle Coin Clicker -->
+    <div id="coin-clicker">
+        <h2>Click the Blue Circle to Earn Coins!</h2>
+        <div id="click-circle"></div>
+    </div>
+
+    <!-- Daily Reward Button -->
+    <div class="daily-reward">
+        <button class="shop-button" id="daily-reward-button">Claim Daily Reward (50 Coins)</button>
+    </div>
+
+    <!-- Coin Click Button -->
+    <button class="shop-button" id="click-button">Click to Earn Coins</button>
+
+    <!-- Boss Battle Section -->
+    <div id="boss-battle">
+        <h2>Boss Battle</h2>
+        <p id="boss-health">Boss Health: <span id="boss-health-bar">100%</span></p>
+        <button class="shop-button" id="attack-boss">Attack Boss</button>
+        <div class="progress-bar">
+            <div class="progress" id="boss-progress"></div>
+        </div>
+    </div>
+
+    <!-- Upgrades Section -->
+    <div class="upgrades">
+        <h2>Upgrades</h2>
+        <button class="upgrade-button" id="upgrade-1">Upgrade Click Power (50 Coins)</button>
+        <button class="upgrade-button" id="upgrade-2">Upgrade Coin Multiplier (100 Coins)</button>
+        <button class="upgrade-button" id="upgrade-3">Auto Clicker (500 Coins)</button>
+    </div>
+
+    <!-- Music Control Section -->
+    <div class="music-control">
+        <button class="shop-button" id="toggle-music">Toggle Music</button>
+    </div>
+
+    <!-- Timer-based Rewards -->
+    <div class="timer-reward">
+        <p>Earn coins while you're idle! <br> You can collect rewards every 5 minutes!</p>
+        <button class="shop-button" id="collect-idle-coins">Collect Idle Coins (5 Minutes)</button>
+    </div>
+
+    <!-- Secret Trigger Section -->
+    <div id="secret-trigger">
+        <p>Click here for something special...</p>
+    </div>
+
+    <!-- Secret Bonus Section -->
+    <div id="secret-message">
+        <h2>You've unlocked the secret bonus!</h2>
+        <p>+1000 Coins! You've discovered the hidden treasure!</p>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="achievements">
+        <h2>Achievements</h2>
+        <div class="achievement" id="first-click">First Click - Earned</div>
+        <div class="achievement" id="boss-slayer">Boss Slayer - Earned</div>
+    </div>
+
+    <!-- Leaderboard Section -->
+    <div class="leaderboard">
+        <h2>Leaderboard</h2>
+        <p>1. Player1 - 5000 Coins</p>
+        <p>2. Player2 - 4000 Coins</p>
+        <p>3. Player3 - 3000 Coins</p>
+    </div>
+
+    <!-- Footer Section -->
+    <footer id="footer">
+        <p>&copy; 2024 GamerGuyYT Clicker - All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let coinCount = 0;
+        let totalClicks = 0;
+        let totalCoinsEarned = 0;
+        let bossHealth = 100;
+        let clickPower = 1;
+        let coinMultiplier = 1;
+        let autoClickerActive = false;
+        let playerLevel = 1;
+        let idleCoins = 0;
+        let cps = 0; // Coins per second
+        let dailyRewardClaimed = false;
+        let lastClaimed = new Date();
+
+        // Update Coin Count and Clicks
+        function updateCoinCount() {
+            document.getElementById('coin-count').textContent = coinCount;
+            document.getElementById('total-clicks').textContent = totalClicks;
+            document.getElementById('total-coins-earned').textContent = totalCoinsEarned;
+            document.getElementById('player-level').textContent = playerLevel;
+            document.getElementById('cps').textContent = cps;
+        }
+
+        // Coin Click Button Logic
+        document.getElementById('click-button').addEventListener('click', function() {
+            coinCount += clickPower * coinMultiplier;
+            totalClicks++;
+            totalCoinsEarned++;
+            updateCoinCount();
+        });
+
+        document.getElementById('click-circle').addEventListener('click', function() {
+            coinCount += clickPower * coinMultiplier;
+            totalClicks++;
+            totalCoinsEarned++;
+            updateCoinCount();
+        });
+
+        // Daily Reward Logic
+        document.getElementById('daily-reward-button').addEventListener('click', function() {
+            const now = new Date();
+            if (!dailyRewardClaimed || (now - lastClaimed) > 86400000) { // 24 hours
+                coinCount += 50;
+                lastClaimed = now;
+                dailyRewardClaimed = true;
+                updateCoinCount();
+            } else {
+                alert('Daily reward already claimed!');
+            }
+        });
+
+        // Boss Fight Logic
+        document.getElementById('attack-boss').addEventListener('click', function() {
+            if (bossHealth > 0) {
+                bossHealth -= 10;
+                document.getElementById('boss-health-bar').textContent = `${bossHealth}%`;
+                document.getElementById('boss-progress').style.width = `${bossHealth}%`;
+                if (bossHealth <= 0) {
+                    bossHealth = 100;
+                    coinCount += 5; // Coins earned for defeating boss
+                    totalCoinsEarned += 5;
+                    updateCoinCount();
+                    alert('Boss defeated! +5 Coins');
+                }
+            }
+        });
+
+        // Idle Coin Logic
+        setInterval(() => {
+            if (autoClickerActive) {
+                coinCount += clickPower * coinMultiplier;
+                updateCoinCount();
+            }
+        }, 1000); // Auto-clicker effect every second
+
+        // Secret Bonus Logic
+        document.getElementById('secret-trigger').addEventListener('click', function() {
+            document.getElementById('secret-message').style.display = 'block';
+            coinCount += 1000;
+            updateCoinCount();
+        });
+
+        // Upgrade Logic
+        document.getElementById('upgrade-1').addEventListener('click', function() {
+            if (coinCount >= 50) {
+                coinCount -= 50;
+                clickPower++;
+                updateCoinCount();
+            } else {
+                alert('Not enough coins!');
+            }
+        });
+
+        document.getElementById('upgrade-2').addEventListener('click', function() {
+            if (coinCount >= 100) {
+                coinCount -= 100;
+                coinMultiplier++;
+                updateCoinCount();
+            } else {
+                alert('Not enough coins!');
+            }
+        });
+
+        document.getElementById('upgrade-3').addEventListener('click', function() {
+            if (coinCount >= 500) {
+                coinCount -= 500;
+                autoClickerActive = true;
+                updateCoinCount();
+            } else {
+                alert('Not enough coins!');
+            }
+        });
+
+        // Music Toggle Logic
+        const music = new Audio('background-music.mp3');
+        music.loop = true;
+
+        document.getElementById('toggle-music').addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                alert('Music started!');
+            } else {
+                music.pause();
+                alert('Music paused!');
+            }
+        });
+    </script>
+</body>
+</html>
